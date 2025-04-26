@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fresh Mart | Grocery Delivery</title>
+  <style>
+    /* General Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    /* Body */
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f8f9fa;
+      color: #333;
+      line-height: 1.6;
+    }
+    
+    /* Header */
+    header {
+      background-color: #2C3E50;
+      color: #fff;
+      padding: 20px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    .header-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    header .logo h1 {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #1ABC9C;
+    }
+    
+    header nav ul {
+      list-style-type: none;
+      display: flex;
+    }
+    
+    header nav ul li {
+      margin-left: 20px;
+    }
+    
+    header nav ul li a {
+      color: #fff;
+      text-decoration: none;
+      font-size: 1.1rem;
+      transition: color 0.3s;
+    }
+    
+    header nav ul li a:hover {
+      color: #1ABC9C;
+    }
+    
+    /* Search Bar */
+    .search-container {
+      display: flex;
+      align-items: center;
+      margin-left: 20px;
+      flex-grow: 1;
+      max-width: 400px;
+    }
+    
+    .search-bar {
+      display: flex;
+      width: 100%;
+      background-color: #fff;
+      border-radius: 30px;
+      overflow: hidden;
+    }
+    
+    .search-input {
+      flex-grow: 1;
+      padding: 10px 15px;
+      border: none;
+      outline: none;
+      font-size: 1rem;
+    }
+    
+    .search-button {
+      background-color: #1ABC9C;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      cursor: pointer;
+    }
+    
+    .search-button:hover {
+      background-color: #16a085;
+    }
+    
+    /* Hero Section */
+    .hero {
+      position: relative;
+      height: 500px;
+      overflow: hidden;
+      color: white;
+    }
+    
+    .slideshow-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+    
+    .slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+      display: flex;
+      align-items: center;
+    }
+    
+    .slide.active {
+      opacity: 1;
+    }
+    
+    .slide::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+    }
+    
+    .slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    /* Slideshow Navigation */
+    .slideshow-dots {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      justify-content: center;
+      z-index: 20;
+    }
+    
+    .dot {
+      cursor: pointer;
+      height: 12px;
+      width: 12px;
+      margin: 0 5px;
+      background-color: #bbb;
+      border-radius: 50%;
+      display: inline-block;
+      transition: background-color 0.3s ease;
+    }
+    
+    .dot.active, .dot:hover {
+      background-color: #1ABC9C;
+    }
+    
+    .hero-content {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    
+    .hero-content h2 {
+      font-size: 3rem;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    }
+    
+    .hero-content p {
+      font-size: 1.2rem;
+      margin-bottom: 30px;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+    }
+    
+    .cta-button {
+      display: inline-block;
+      background-color: #1ABC9C;
+      color: white;
+      padding: 15px 30px;
+      text-decoration: none;
+      border-radius: 30px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      transition: background-color 0.3s, transform 0.2s;
+    }
+    
+    .cta-button:hover {
+      background-color: #16a085;
+      transform: translateY(-3px);
+    }
+    
+    /* Categories Section */
+    .categories {
+      text-align: center;
+      padding: 60px 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .categories h2 {
+      font-size: 2.2rem;
+      margin-bottom: 40px;
+      color: #2C3E50;
+      position: relative;
+    }
+    
+    .categories h2::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 3px;
+      background-color: #1ABC9C;
+    }
+    
+    .category-container {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 30px;
+    }
+    
+    .category-item-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 150px;
+      margin-bottom: 20px;
+    }
+    
+    .category-item {
+      position: relative;
+      width: 120px;
+      height: 120px;
+      background-color: #fff;
+      border-radius: 50%;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      transition: transform 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .category-item:hover {
+      transform: scale(1.05);
+    }
+    
+    .category-button {
+      width: 100%;
+      height: 100%;
+      display: block;
+      background-size: cover;
+      background-position: center;
+      border-radius: 50%;
+    }
+    
+    .category-name {
+      margin-top: 15px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: #2C3E50;
+    }
+    
+    /* Featured Products Section */
+    .featured-products {
+      background-color: #f0f3f6;
+      padding: 60px 20px;
+    }
+    
+    .featured-products-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .featured-products h2 {
+      font-size: 2.2rem;
+      margin-bottom: 40px;
+      color: #2C3E50;
+      text-align: center;
+      position: relative;
+    }
+    
+    .featured-products h2::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 3px;
+      background-color: #1ABC9C;
+    }
+    
+    .product-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 25px;
+    }
+    
+    .product-card {
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+      width: 260px;
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .product-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+    }
+    
+    .product-card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
+    
+    .product-info {
+      padding: 20px;
+    }
+    
+    .product-info h3 {
+      margin-bottom: 8px;
+      font-size: 1.2rem;
+      color: #2C3E50;
+    }
+    
+    .product-info .price {
+      color: #1ABC9C;
+      font-weight: bold;
+      font-size: 1.1rem;
+      margin-bottom: 15px;
+    }
+    
+    .add-to-cart {
+      background-color: #1ABC9C;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      width: 100%;
+      border-radius: 5px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    
+    .add-to-cart:hover {
+      background-color: #16a085;
+    }
+    
+    /* File Upload Form - For Admin */
+    .image-upload-section {
+      background-color: #fff;
+      padding: 30px;
+      margin: 40px auto;
+      max-width: 800px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .image-upload-section h2 {
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+      color: #2C3E50;
+    }
+    
+    .image-form {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: bold;
+      color: #2C3E50;
+    }
+    
+    .form-input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+    
+    .file-input-container {
+      position: relative;
+      overflow: hidden;
+      display: inline-block;
+    }
+    
+    .file-input-label {
+      background-color: #1ABC9C;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      display: inline-block;
+    }
+    
+    .file-input {
+      position: absolute;
+      left: 0;
+      top: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+    
+    .file-name {
+      margin-left: 10px;
+      font-style: italic;
+    }
+    
+    .submit-button {
+      background-color: #1ABC9C;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 5px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      margin-top: 10px;
+      align-self: flex-start;
+    }
+    
+    .submit-button:hover {
+      background-color: #16a085;
+    }
+    
+    /* Why Choose Us Section */
+    .why-choose-us {
+      padding: 60px 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    
+    .why-choose-us h2 {
+      font-size: 2.2rem;
+      margin-bottom: 40px;
+      color: #2C3E50;
+      position: relative;
+    }
+    
+    .why-choose-us h2::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 3px;
+      background-color: #1ABC9C;
+    }
+    
+    .features-container {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      gap: 30px;
+    }
+    
+    .feature {
+      max-width: 300px;
+      padding: 20px;
+    }
+    
+    .feature-icon {
+      font-size: 3rem;
+      margin-bottom: 20px;
+      color: #1ABC9C;
+    }
+    
+    .feature h3 {
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+      color: #2C3E50;
+    }
+    
+    .feature p {
+      color: #7f8c8d;
+    }
+    
+    /* Footer */
+    footer {
+      background-color: #2C3E50;
+      color: white;
+      padding: 40px 20px;
+    }
+    
+    .footer-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 30px;
+    }
+    
+    .footer-section {
+      flex: 1;
+      min-width: 250px;
+    }
+    
+    .footer-section h3 {
+      font-size: 1.3rem;
+      margin-bottom: 20px;
+      position: relative;
+      padding-bottom: 10px;
+    }
+    
+    .footer-section h3::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 50px;
+      height: 2px;
+      background-color: #1ABC9C;
+    }
+    
+    .footer-section ul {
+      list-style-type: none;
+    }
+    
+    .footer-section ul li {
+      margin-bottom: 10px;
+    }
+    
+    .footer-section ul li a {
+      color: #ecf0f1;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    
+    .footer-section ul li a:hover {
+      color: #1ABC9C;
+    }
+    
+    .footer-bottom {
+      text-align: center;
+      padding-top: 30px;
+      margin-top: 30px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      max-width: 1200px;
+      margin: 30px auto 0;
+    }
+    
+    @media (max-width: 768px) {
+      .header-container {
+        flex-direction: column;
+      }
+      
+      header nav ul {
+        margin-top: 20px;
+      }
+      
+      .search-container {
+        margin: 15px 0;
+        max-width: 100%;
+      }
+      
+      .hero-content h2 {
+        font-size: 2rem;
+      }
+      
+      .categories {
+        padding: 40px 20px;
+      }
+      
+      .category-container {
+        gap: 15px;
+      }
+      
+      .footer-section {
+        flex: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-container">
+      <div class="logo">
+        <h1>Fresh Mart</h1>
+      </div>
+      <div class="search-container">
+        <div class="search-bar">
+          <input type="text" class="search-input" placeholder="Search for products...">
+          <button class="search-button">Search</button>
+        </div>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="test.html">Home</a></li>
+          <li><a href="Diary.html">Shop</a></li>
+          <li><a href="#">Categories</a></li>
+          <li><a href="test2.html">About Us</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="hero-content">
+      <h2>Fresh Groceries Delivered To Your Door</h2>
+      <p>Shop from thousands of items and get them delivered in as little as 2 hours</p>
+      <a href="flowers.html" class="cta-button">Shop Now</a>
+    </div>
+    <div class="slideshow-container">
+      <div class="slide active">
+        <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1200&q=80" alt="Fresh vegetables">
+      </div>
+      <div class="slide">
+        <img src="https://images.unsplash.com/photo-1573246123716-6b1782bfc499?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1200&q=80" alt="Fruits selection">
+      </div>
+      <div class="slide">
+        <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1200&q=80" alt="Bakery items">
+      </div>
+    </div>
+    <div class="slideshow-dots">
+      <span class="dot active" onclick="currentSlide(1)"></span>
+      <span class="dot" onclick="currentSlide(2)"></span>
+      <span class="dot" onclick="currentSlide(3)"></span>
+    </div>
+  </section>
+
+  <section class="categories">
+    <h2>Shop By Category</h2>
+    <div class="category-container">
+      <div class="category-item-wrapper">
+        <div class="category-item">
+          <a href="VEGETABLES.html" class="category-button" style="background-image: url('https://images.pexels.com/photos/235294/pexels-photo-235294.jpeg?cs=srgb&dl=pexels-asphotograpy-235294.jpg&fm=jpg')"></a>
+        </div>
+        <div class="category-name">Fruits</div>
+      </div>
+      <div class="category-item-wrapper">
+        <div class="category-item">
+          <a href="flowers.html" class="category-button" style="background-image: url('https://api.floraindia.com/upload/FoD7XBLNzM1736590003000.webp')"></a>
+        </div>
+        <div class="category-name">Flowers</div>
+      </div>
+      <div class="category-item-wrapper">
+        <div class="category-item">
+          <a href="Diary.html" class="category-button" style="background-image: url('https://okcredit-blog-images-prod.storage.googleapis.com/2021/12/dairyproducts1.jpg')"></a>
+        </div>
+        <div class="category-name">Dairy</div>
+      </div>
+      <div class="category-item-wrapper">
+        <div class="category-item">
+          <a href="cakes.html" class="category-button" style="background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSkrv-Ft0_semJFdGxxAz8XaK3wtWyglfNYkg&s')"></a>
+        </div>
+        <div class="category-name">Bakery</div>
+      </div>
+      <div class="category-item-wrapper">
+        <div class="category-item">
+          <a href="meat.html" class="category-button" style="background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQWSjtgCUZb3wKHarV9cd-Kikcs3w1tIw3Iag&s')"></a>
+        </div>
+        <div class="category-name">Meat</div>
+      </div>
+      <div class="category-item-wrapper">
+        <div class="category-item">
+          <a href="drinks.html" class="category-button" style="background-image: url('https://nawon.com.vn/wp-content/uploads/2024/01/soft-drinks.jpg')"></a>
+        </div>
+        <div class="category-name">Beverages</div>
+      </div>
+    </div>
+  </section>
+
+   <section class="customer-section">
+  <div class="customer-container">
+    <div class="sign-in-section">
+      <h2>Customer Sign In</h2>
+      <form class="sign-in-form">
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" class="form-input" placeholder="Enter your email" required>
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" class="form-input" placeholder="Enter your password" required>
+        </div>
+        <div class="form-options">
+          <div class="remember-me">
+            <input type="checkbox" id="remember-me">
+            <label for="remember-me">Remember me</label>
+          </div>
+          <a href="#" class="forgot-password">Forgot Password?</a>
+        </div>
+        <button type="submit" class="submit-button">Sign In</button>
+        <div class="sign-up-option">
+          <p>New to Fresh Mart? <a href="#">Create an account</a></p>
+        </div>
+      </form>
+    </div>
+    
+    <div class="delivery-section">
+      <h2>Delivery Options</h2>
+      <div class="delivery-options">
+        <div class="delivery-option">
+          <div class="option-icon">🚚</div>
+          <div class="option-details">
+            <h3>Standard Delivery</h3>
+            <p>Get your groceries within 24 hours</p>
+            <p class="delivery-price">₹40</p>
+          </div>
+        </div>
+        <div class="delivery-option featured">
+          <div class="option-icon">⚡</div>
+          <div class="option-details">
+            <h3>Express Delivery</h3>
+            <p>Get your groceries within 2 hours</p>
+            <p class="delivery-price">₹99</p>
+          </div>
+        </div>
+        <div class="delivery-option">
+          <div class="option-icon">📅</div>
+          <div class="option-details">
+            <h3>Scheduled Delivery</h3>
+            <p>Choose your preferred delivery time</p>
+            <p class="delivery-price">₹60</p>
+          </div>
+        </div>
+      </div>
+      <div class="delivery-area">
+        <h3>Check Delivery Availability</h3>
+        <div class="pincode-checker">
+          <input type="text" placeholder="Enter your PIN code" class="form-input pincode-input">
+          <button class="check-button">Check</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Customer Section Styles */
+  .customer-section {
+    background-color: #f8f9fa;
+    padding: 60px 20px;
+  }
+  
+  .customer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    justify-content: center;
+  }
+  
+  /* Sign In Section */
+  .sign-in-section {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    width: 100%;
+    max-width: 450px;
+  }
+  
+  .sign-in-section h2 {
+    font-size: 1.8rem;
+    margin-bottom: 25px;
+    color: #2C3E50;
+    text-align: center;
+  }
+  
+  .sign-in-form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .remember-me {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .forgot-password {
+    color: #1ABC9C;
+    text-decoration: none;
+    font-size: 0.9rem;
+  }
+  
+  .forgot-password:hover {
+    text-decoration: underline;
+  }
+  
+  .sign-up-option {
+    margin-top: 20px;
+    text-align: center;
+  }
+  
+  .sign-up-option a {
+    color: #1ABC9C;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  
+  .sign-up-option a:hover {
+    text-decoration: underline;
+  }
+
+  /* Delivery Section */
+  .delivery-section {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    width: 100%;
+    max-width: 650px;
+  }
+  
+  .delivery-section h2 {
+    font-size: 1.8rem;
+    margin-bottom: 25px;
+    color: #2C3E50;
+    text-align: center;
+  }
+  
+  .delivery-options {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 25px;
+  }
+  
+  .delivery-option {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #e1e4e8;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+  }
+  
+  .delivery-option:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  .delivery-option.featured {
+    border-color: #1ABC9C;
+    background-color: rgba(26, 188, 156, 0.05);
+  }
+  
+  .option-icon {
+    font-size: 2rem;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f0f3f6;
+    border-radius: 50%;
+  }
+  
+  .featured .option-icon {
+    background-color: rgba(26, 188, 156, 0.2);
+  }
+  
+  .option-details {
+    flex: 1;
+  }
+  
+  .option-details h3 {
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+    color: #2C3E50;
+  }
+  
+  .option-details p {
+    margin: 0;
+    color: #7f8c8d;
+  }
+  
+  .delivery-price {
+    font-weight: bold;
+    color: #1ABC9C !important;
+    margin-top: 5px !important;
+  }
+  
+  .delivery-area {
+    margin-top: 30px;
+  }
+  
+  .delivery-area h3 {
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+    color: #2C3E50;
+  }
+  
+  .pincode-checker {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .pincode-input {
+    flex: 1;
+  }
+  
+  .check-button {
+    background-color: #1ABC9C;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .check-button:hover {
+    background-color: #16a085;
+  }
+  
+  @media (max-width: 768px) {
+    .customer-container {
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .sign-in-section,
+    .delivery-section {
+      max-width: 100%;
+      width: 100%;
+    }
+  }
+</style>
+  <section class="why-choose-us">
+    <h2>Why Choose Us</h2>
+    <div class="features-container">
+      <div class="feature">
+        <div class="feature-icon">🚚</div>
+        <h3>Fast Delivery</h3>
+        <p>Get your groceries delivered in as little as 2 hours with our express delivery service.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🌱</div>
+        <h3>Fresh Products</h3>
+        <p>We source directly from local farmers to ensure the freshest produce for our customers.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">💰</div>
+        <h3>Best Prices</h3>
+        <p>Competitive pricing and regular discounts to give you the best value for your money.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-container">
+      <div class="footer-section">
+        <h3>Fresh Mart</h3>
+        <p>Your one-stop shop for fresh groceries and daily essentials delivered straight to your doorstep.</p>
+      </div>
+      <div class="footer-section">
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Shop</a></li>
+          <li><a href="#">FAQ</a></li>
+          <li><a href="#">Terms & Conditions</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3>Contact Us</h3>
+        <ul>
+          <li>Email: info@freshmart.com</li>
+          <li>Phone: +91 1234567890</li>
+          <li>Address: 123 Grocery Street, City Center</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 Fresh Mart. All Rights Reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Slideshow functionality
+    let slideIndex = 1;
+    showSlides(slideIndex);
+    
+    // Automatic slideshow
+    function autoSlideShow() {
+      showSlides(slideIndex += 1);
+      setTimeout(autoSlideShow, 5000); // Change image every 5 seconds
+    }
+    
+    // Start automatic slideshow
+    setTimeout(autoSlideShow, 5000);
+    
+    // Manual slideshow controls
+    function currentSlide(n) {
+      showSlides(slideIndex = n);
+    }
+    
+    function showSlides(n) {
+      let i;
+      let slides = document.getElementsByClassName("slide");
+      let dots = document.getElementsByClassName("dot");
+      
+      if (n > slides.length) {slideIndex = 1}
+      if (n < 1) {slideIndex = slides.length}
+      
+      for (i = 0; i < slides.length; i++) {
+        slides[i].classList.remove("active");
+      }
+      
+      for (i = 0; i < dots.length; i++) {
+        dots[i].className = dots[i].className.replace(" active", "");
+      }
+      
+      slides[slideIndex-1].classList.add("active");
+      dots[slideIndex-1].classList.add("active");
+    }
+    
+    // Image upload file name display
+    document.getElementById('product-image').addEventListener('change', function() {
+      const fileName = this.files[0]?.name || 'No file chosen';
+      document.getElementById('file-name').textContent = fileName;
+    });
+  </script>
+</body>
+</html>

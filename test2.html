@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Us | Fresh Mart</title>
+  <style>
+    /* General Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    /* Body */
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f8f9fa;
+      color: #333;
+      line-height: 1.6;
+    }
+    
+    /* Header */
+    header {
+      background-color: #2C3E50;
+      color: #fff;
+      padding: 20px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    .header-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    header .logo h1 {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #1ABC9C;
+    }
+    
+    header nav ul {
+      list-style-type: none;
+      display: flex;
+    }
+    
+    header nav ul li {
+      margin-left: 20px;
+    }
+    
+    header nav ul li a {
+      color: #fff;
+      text-decoration: none;
+      font-size: 1.1rem;
+      transition: color 0.3s;
+    }
+    
+    header nav ul li a:hover {
+      color: #1ABC9C;
+    }
+    
+    header nav ul li a.active {
+      color: #1ABC9C;
+      font-weight: bold;
+    }
+    
+    /* Search Bar */
+    .search-container {
+      display: flex;
+      align-items: center;
+      margin-left: 20px;
+      flex-grow: 1;
+      max-width: 400px;
+    }
+    
+    .search-bar {
+      display: flex;
+      width: 100%;
+      background-color: #fff;
+      border-radius: 30px;
+      overflow: hidden;
+    }
+    
+    .search-input {
+      flex-grow: 1;
+      padding: 10px 15px;
+      border: none;
+      outline: none;
+      font-size: 1rem;
+    }
+    
+    .search-button {
+      background-color: #1ABC9C;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      cursor: pointer;
+    }
+    
+    .search-button:hover {
+      background-color: #16a085;
+    }
+    
+    /* Page Banner */
+    .page-banner {
+      background-color: #1ABC9C;
+      padding: 60px 20px;
+      color: white;
+      text-align: center;
+    }
+    
+    .page-banner h1 {
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+    }
+    
+    .page-banner p {
+      font-size: 1.2rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    /* About Us Content */
+    .about-container {
+      max-width: 1200px;
+      margin: 60px auto;
+      padding: 0 20px;
+    }
+    
+    .about-section {
+      margin-bottom: 60px;
+    }
+    
+    .about-section h2 {
+      font-size: 2rem;
+      margin-bottom: 30px;
+      color: #2C3E50;
+      position: relative;
+      padding-bottom: 10px;
+    }
+    
+    .about-section h2::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 60px;
+      height: 3px;
+      background-color: #1ABC9C;
+    }
+    
+    .about-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+    }
+    
+    .about-content p {
+      margin-bottom: 20px;
+      font-size: 1.1rem;
+      color: #555;
+    }
+    
+    .about-image {
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .about-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    
+    /* Mission Values Section */
+    .mission-values {
+      background-color: #f0f3f6;
+      padding: 60px 20px;
+    }
+    
+    .mission-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .mission-container h2 {
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 50px;
+      color: #2C3E50;
+      position: relative;
+    }
+    
+    .mission-container h2::after {
+      content: '';
+      position: absolute;
+      bottom: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 3px;
+      background-color: #1ABC9C;
+    }
+    
+    .values-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+    }
+    
+    .value-card {
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+      padding: 30px;
+      text-align: center;
+      transition: transform 0.3s ease;
+    }
+    
+    .value-card:hover {
+      transform: translateY(-10px);
+    }
+    
+    .value-icon {
+      font-size: 2.5rem;
+      color: #1ABC9C;
+      margin-bottom: 20px;
+    }
+    
+    .value-card h3 {
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+      color: #2C3E50;
+    }
+    
+    .value-card p {
+      color: #555;
+    }
+    
+    /* Team Section */
+    .team-section {
+      padding: 60px 20px;
+    }
+    
+    .team-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    
+    .team-container h2 {
+      font-size: 2rem;
+      margin-bottom: 50px;
+      color: #2C3E50;
+      position: relative;
+    }
+    
+    .team-container h2::after {
+      content: '';
+      position: absolute;
+      bottom: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 3px;
+      background-color: #1ABC9C;
+    }
+    
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+    }
+    
+    .team-member {
+      background-color: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+      transition: transform 0.3s ease;
+    }
+    
+    .team-member:hover {
+      transform: translateY(-10px);
+    }
+    
+    .member-image {
+      width: 100%;
+      height: 250px;
+      overflow: hidden;
+    }
+    
+    .member-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .member-info {
+      padding: 20px;
+    }
+    
+    .member-info h3 {
+      font-size: 1.3rem;
+      margin-bottom: 5px;
+      color: #2C3E50;
+    }
+    
+    .member-info p.role {
+      color: #1ABC9C;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    
+    .member-info p.bio {
+      color: #555;
+      font-size: 0.9rem;
+    }
+    
+    /* Stats Section */
+    .stats-section {
+      background-color: #2C3E50;
+      color: white;
+      padding: 60px 20px;
+      text-align: center;
+    }
+    
+    .stats-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 30px;
+    }
+    
+    .stat-item {
+      padding: 20px;
+    }
+    
+    .stat-number {
+      font-size: 3rem;
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #1ABC9C;
+    }
+    
+    .stat-label {
+      font-size: 1.2rem;
+    }
+    
+    /* Partner Section */
+    .partners-section {
+      padding: 60px 20px;
+      background-color: #f8f9fa;
+    }
+    
+    .partners-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    
+    .partners-container h2 {
+      font-size: 2rem;
+      margin-bottom: 50px;
+      color: #2C3E50;
+      position: relative;
+    }
+    
+    .partners-container h2::after {
+      content: '';
+      position: absolute;
+      bottom: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 3px;
+      background-color: #1ABC9C;
+    }
+    
+    .partners-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 30px;
+      align-items: center;
+    }
+    
+    .partner-logo {
+      background-color: white;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100px;
+      transition: transform 0.3s ease;
+    }
+    
+    .partner-logo:hover {
+      transform: scale(1.05);
+    }
+    
+    .partner-logo img {
+      max-width: 80%;
+      max-height: 80%;
+      object-fit: contain;
+    }
+    
+    /* CTA Section */
+    .cta-section {
+      background-color: #1ABC9C;
+      color: white;
+      padding: 60px 20px;
+      text-align: center;
+    }
+    
+    .cta-container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .cta-container h2 {
+      font-size: 2.2rem;
+      margin-bottom: 20px;
+    }
+    
+    .cta-container p {
+      font-size: 1.2rem;
+      margin-bottom: 30px;
+    }
+    
+    .cta-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    
+    .cta-button {
+      display: inline-block;
+      padding: 15px 30px;
+      border-radius: 30px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1.1rem;
+      transition: all 0.3s ease;
+    }
+    
+    .primary-button {
+      background-color: white;
+      color: #1ABC9C;
+    }
+    
+    .primary-button:hover {
+      background-color: #2C3E50;
+      color: white;
+    }
+    
+    .secondary-button {
+      background-color: transparent;
+      color: white;
+      border: 2px solid white;
+    }
+    
+    .secondary-button:hover {
+      background-color: white;
+      color: #1ABC9C;
+    }
+    
+    /* Footer */
+    footer {
+      background-color: #2C3E50;
+      color: white;
+      padding: 40px 20px;
+    }
+    
+    .footer-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 30px;
+    }
+    
+    .footer-section {
+      flex: 1;
+      min-width: 250px;
+    }
+    
+    .footer-section h3 {
+      font-size: 1.3rem;
+      margin-bottom: 20px;
+      position: relative;
+      padding-bottom: 10px;
+    }
+    
+    .footer-section h3::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 50px;
+      height: 2px;
+      background-color: #1ABC9C;
+    }
+    
+    .footer-section ul {
+      list-style-type: none;
+    }
+    
+    .footer-section ul li {
+      margin-bottom: 10px;
+    }
+    
+    .footer-section ul li a {
+      color: #ecf0f1;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    
+    .footer-section ul li a:hover {
+      color: #1ABC9C;
+    }
+    
+    .footer-bottom {
+      text-align: center;
+      padding-top: 30px;
+      margin-top: 30px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      max-width: 1200px;
+      margin: 30px auto 0;
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .header-container {
+        flex-direction: column;
+      }
+      
+      header nav ul {
+        margin-top: 20px;
+      }
+      
+      .search-container {
+        margin: 15px 0;
+        max-width: 100%;
+      }
+      
+      .about-grid, 
+      .team-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .cta-buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .footer-section {
+        flex: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-container">
+      <div class="logo">
+        <h1>Fresh Mart</h1>
+      </div>
+      <div class="search-container">
+        <div class="search-bar">
+          <input type="text" class="search-input" placeholder="Search for products...">
+          <button class="search-button">Search</button>
+        </div>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="#">Shop</a></li>
+          <li><a href="#">Categories</a></li>
+          <li><a href="about-us.html" class="active">About Us</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <section class="page-banner">
+    <h1>About Fresh Mart</h1>
+    <p>Delivering fresh groceries and quality products directly to your doorstep since 2020</p>
+  </section>
+
+  <section class="about-container">
+    <div class="about-section">
+      <h2>Our Story</h2>
+      <div class="about-grid">
+        <div class="about-content">
+          <p>Fresh Mart was founded in 2020 with a simple yet powerful mission: to revolutionize grocery shopping by bringing fresh, quality products directly to customers' homes. What started as a small operation serving just one neighborhood has quickly grown into one of the most trusted grocery delivery services in the region.</p>
+          
+          <p>Our founders, a team of food enthusiasts and tech innovators, noticed the growing need for convenient shopping solutions that don't compromise on quality. They combined their expertise to create a platform that connects local farmers, artisanal producers, and trusted brands with customers who value freshness and convenience.</p>
+          
+          <p>Today, Fresh Mart serves thousands of households, delivering everything from farm-fresh produce to everyday essentials. Despite our growth, we remain committed to our core values: exceptional quality, sustainable practices, and customer satisfaction.</p>
+        </div>
+        <div class="about-image">
+          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqV2MNxRKbLuh7sUT6uIkXptaBBrJdw8mOsvWRkv0jB1JobUofjFLFejtXtE8kSIdCwqo&usqp=CAU" width="300" height="250"  alt="Fresh Mart store and delivery vehicles">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="mission-values">
+    <div class="mission-container">
+      <h2>Our Mission & Values</h2>
+      <div class="values-grid">
+        <div class="value-card">
+          <div class="value-icon">🌱</div>
+          <h3>Freshness Guaranteed</h3>
+          <p>We are committed to delivering only the freshest products to our customers. Our carefully designed supply chain ensures that groceries go from farm to table in the shortest time possible.</p>
+        </div>
+        <div class="value-card">
+          <div class="value-icon">♻</div>
+          <h3>Sustainability</h3>
+          <p>We're passionate about reducing our environmental footprint. From eco-friendly packaging to partnering with sustainable suppliers, we're constantly working to protect our planet.</p>
+        </div>
+        <div class="value-card">
+          <div class="value-icon">👨‍👩‍👧‍👦</div>
+          <h3>Community First</h3>
+          <p>We believe in building strong relationships with local communities. By supporting local farmers and producers, we help strengthen the local economy while providing the best products.</p>
+        </div>
+        <div class="value-card">
+          <div class="value-icon">⚡</div>
+          <h3>Convenience</h3>
+          <p>We understand the value of your time. Our reliable delivery service and intuitive platform are designed to make grocery shopping as effortless and enjoyable as possible.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="team-section">
+    <div class="team-container">
+      <h2>Meet Our Leadership Team</h2>
+      <div class="team-grid">
+        <div class="team-member">
+          <div class="member-image">
+            <img src="/api/placeholder/400/400" alt="Raj Sharma - CEO">
+          </div>
+          <div class="member-info">
+            <h3>Raj Sharma</h3>
+            <p class="role">Chief Executive Officer</p>
+            <p class="bio">With over 15 years in retail and e-commerce, Raj leads Fresh Mart with a vision to transform how people shop for groceries while supporting local producers.</p>
+          </div>
+        </div>
+        <div class="team-member">
+          <div class="member-image">
+            <img src="/api/placeholder/400/400" alt="Priya Patel - COO">
+          </div>
+          <div class="member-info">
+            <h3>Priya Patel</h3>
+            <p class="role">Chief Operations Officer</p>
+            <p class="bio">Priya oversees our operations, ensuring that every order is fulfilled with precision and care. Her expertise in logistics has been crucial to our rapid growth.</p>
+          </div>
+        </div>
+        <div class="team-member">
+          <div class="member-image">
+            <img src="/api/placeholder/400/400" alt="Vikram Mehta - CTO">
+          </div>
+          <div class="member-info">
+            <h3>Vikram Mehta</h3>
+            <p class="role">Chief Technology Officer</p>
+            <p class="bio">As our tech visionary, Vikram leads the development of our platform, constantly innovating to make grocery shopping smarter and more personalized.</p>
+          </div>
+        </div>
+        <div class="team-member">
+          <div class="member-image">
+            <img src="/api/placeholder/400/400" alt="Anika Singh - CMO">
+          </div>
+          <div class="member-info">
+            <h3>Anika Singh</h3>
+            <p class="role">Chief Marketing Officer</p>
+            <p class="bio">With a passion for telling meaningful stories, Anika leads our marketing efforts, connecting Fresh Mart with customers who share our values.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="stats-section">
+    <div class="stats-container">
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-number">50,000+</div>
+          <div class="stat-label">Happy Customers</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">200+</div>
+          <div class="stat-label">Cities Covered</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">500+</div>
+          <div class="stat-label">Local Producers</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">2M+</div>
+          <div class="stat-label">Orders Delivered</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="partners-section">
+    <div class="partners-container">
+      <h2>Our Partners</h2>
+      <div class="partners-grid">
+        <div class="partner-logo">
+          <img src="/api/placeholder/150/80" alt="Local Farms Cooperative">
+        </div>
+        <div class="partner-logo">
+          <img src="/api/placeholder/150/80" alt="Organic Producers Association">
+        </div>
+        <div class="partner-logo">
+          <img src="/api/placeholder/150/80" alt="Green Packaging Solutions">
+        </div>
+        <div class="partner-logo">
+          <img src="/api/placeholder/150/80" alt="Quality Foods">
+        </div>
+        <div class="partner-logo">
+          <img src="/api/placeholder/150/80" alt="Express Logistics">
+        </div>
+        <div class="partner-logo">
+          <img src="/api/placeholder/150/80" alt="Freshness Certification">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-section">
+    <div class="cta-container">
+      <h2>Ready to Experience Fresh Mart?</h2>
+      <p>Join thousands of happy customers who have made grocery shopping effortless with Fresh Mart.</p>
+      <div class="cta-buttons">
+        <a href="#" class="cta-button primary-button">Shop Now</a>
+        <a href="#" class="cta-button secondary-button">Download Our App</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-container">
+      <div class="footer-section">
+        <h3>Fresh Mart</h3>
+        <p>Your one-stop shop for fresh groceries and daily essentials delivered straight to your doorstep.</p>
+      </div>
+      <div class="footer-section">
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Shop</a></li>
+          <li><a href="#">FAQ</a></li>
+          <li><a href="#">Terms & Conditions</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3>Contact Us</h3>
+        <ul>
+          <li>Email: info@freshmart.com</li>
+          <li>Phone: +91 1234567890</li>
+          <li>Address: 123 Grocery Street, City Center</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 Fresh Mart. All Rights Reserved.</p>
+    </div>
+  </footer>
+</body>
+</html>

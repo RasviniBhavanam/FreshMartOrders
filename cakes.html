@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grocery Express - Slot Booking</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            color: #333;
+        }
+        
+        header {
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 1.5em;
+            letter-spacing: 1px;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-around;
+            background-color: rgba(51, 51, 51, 0.9);
+            padding: 10px 0;
+        }
+        
+        nav a {
+            color: white;
+            font-weight: bold;
+            text-transform: uppercase;
+            text-decoration: none;
+            padding: 10px 15px;
+        }
+        
+        nav a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+        }
+        
+        /* Payment Panel Styles */
+        .payment-panel {
+            position: fixed;
+            top: 0;
+            right: 0;
+            transform: translateX(100%);
+            width: 400px;
+            height: 100%;
+            background-color: white;
+            box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+        
+        .payment-panel.active {
+            transform: translateX(0);
+        }
+        
+        .panel-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            cursor: pointer;
+            font-size: 24px;
+            color: #888;
+        }
+        
+        .panel-header {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .panel-title {
+            font-size: 20px;
+            font-weight: bold;
+        }
+        
+        .added-product {
+            display: flex;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .added-product-image {
+            width: 80px;
+            height: 80px;
+            background-color: #eee;
+            border-radius: 4px;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #888;
+        }
+        
+        .added-product-details h4 {
+            margin-bottom: 5px;
+        }
+        
+        .added-product-price {
+            font-weight: bold;
+            color: #333;
+        }
+        
+        /* Slot Booking Styles */
+        .slot-booking-section {
+            margin: 30px 0;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+        
+        .section-title {
+            margin-bottom: 15px;
+            font-size: 18px;
+            color: #333;
+            font-weight: 600;
+        }
+        
+        .date-picker {
+            margin-bottom: 25px;
+        }
+        
+        .date-picker-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .current-month {
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
+        .date-nav-button {
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: #4CAF50;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .date-nav-button:hover {
+            background-color: rgba(76, 175, 80, 0.1);
+        }
+        
+        .date-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+        }
+        
+        .day-name {
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        
+        .date-item {
+            text-align: center;
+            padding: 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .date-item:hover:not(.disabled) {
+            background-color: rgba(76, 175, 80, 0.1);
+        }
+        
+        .date-item.selected {
+            background-color: #4CAF50;
+            color: white;
+        }
+        
+        .date-item.today {
+            border: 1px solid #4CAF50;
+        }
+        
+        .date-item.disabled {
+            color: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .time-slots {
+            margin-top: 25px;
+        }
+        
+        .time-slot-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        
+        .time-slot {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .time-slot:hover:not(.disabled) {
+            border-color: #4CAF50;
+            background-color: rgba(76, 175, 80, 0.05);
+        }
+        
+        .time-slot.selected {
+            border-color: #4CAF50;
+            background-color: rgba(76, 175, 80, 0.2);
+        }
+        
+        .time-slot.disabled {
+            color: #ccc;
+            cursor: not-allowed;
+            background-color: #f9f9f9;
+        }
+        
+        .time-slot-info {
+            font-size: 14px;
+            color: #777;
+            margin-top: 3px;
+        }
+        
+        .checkout-button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+        
+        .checkout-button:hover {
+            background-color: #45a049;
+        }
+        
+        .checkout-button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        
+        .selected-slot-summary {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            font-size: 14px;
+            display: none;
+        }
+        
+        .selected-slot-summary.visible {
+            display: block;
+        }
+        
+        .summary-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #4CAF50;
+        }
+        
+        .slot-detail {
+            margin-bottom: 5px;
+        }
+        
+        .slot-detail-label {
+            font-weight: 600;
+            margin-right: 5px;
+        }
+        
+        /* Order Confirmation Styles */
+        .order-confirmation-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1100;
+            pointer-events: none;
+        }
+        
+        .order-confirmation {
+            background: linear-gradient(145deg, #f9fff9, #e1f5e1);
+            border: 2px solid #4CAF50;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2), 0 0 40px rgba(76, 175, 80, 0.15);
+            animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            text-align: center;
+            position: relative;
+            pointer-events: auto;
+        }
+        
+        @keyframes popIn {
+            0% { opacity: 0; transform: scale(0.8); }
+            70% { transform: scale(1.05); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        
+        .confirmation-title {
+            color: #2e8b57;
+            font-size: 28px;
+            margin-bottom: 15px;
+            text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+            position: relative;
+            display: inline-block;
+        }
+        
+        .confirmation-title:after {
+            content: '';
+            display: block;
+            width: 80%;
+            height: 3px;
+            background: linear-gradient(to right, transparent, #4CAF50, transparent);
+            margin: 10px auto 0;
+        }
+        
+        .confirmation-message {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 25px;
+        }
+        
+        .delivery-info {
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        
+        .delivery-info p {
+            margin: 10px 0;
+        }
+        
+        .delivery-info strong {
+            color: #2e8b57;
+            font-weight: 600;
+        }
+        
+        .delivery-slot, #delivery-person, #delivery-time {
+            font-weight: 600;
+            color: #000;
+            border-bottom: 1px dashed #4CAF50;
+            padding-bottom: 2px;
+        }
+        
+        .track-order-note {
+            font-size: 15px;
+            color: #555;
+            background-color: rgba(76, 175, 80, 0.1);
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .close-confirmation {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #888;
+            transition: color 0.2s;
+            width: 30px;
+            height: 30px;
+            line-height: 30px;
+            text-align: center;
+            border-radius: 50%;
+        }
+        
+        .close-confirmation:hover {
+            color: #333;
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+        
+        .green-highlight {
+            background-color: rgba(76, 175, 80, 0.1);
+            border-radius: 4px;
+            padding: 5px 8px;
+        }
+        
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 999;
+            display: none;
+        }
+        
+        .overlay.active {
+            display: block;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 15px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            font-size: 0.9em;
+            letter-spacing: 0.5px;
+        }
+        
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+        }
+        
+        .product-card {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            padding: 20px;
+            width: 250px;
+        }
+        
+        .product-card img {
+            width: 100%;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .product-card h3 {
+            margin: 10px 0;
+            font-size: 1.2em;
+        }
+        
+        .product-card p {
+            margin: 10px 0;
+            font-size: 1em;
+            color: #555;
+        }
+        
+        .product-card button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 10px 15px;
+            font-size: 1em;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        
+        .product-card button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        Grocery Express - Your Daily Needs Delivered!
+    </header>
+    <nav>
+        <a href="#home">Home</a>
+        <a href="#products">Products</a>
+        <a href="#about">About Us</a>
+        <a href="#contact">Contact</a>
+    </nav>
+    
+    <div class="container" id="products">
+        <!-- Example Product -->
+       <div class="product-card">
+            <img src="https://assets.winni.in/product/primary/2023/4/84499.jpeg?dpr=2&w=220" alt="Chocolate">
+            <h3>Chocolate</h3>
+            <p>₹100 per kg</p>
+            <button class="add-to-cart" data-name="Chocolate" data-price="100">Add to Cart</button>
+        </div>
+        <!-- Product 2 -->
+        <div class="product-card">
+           <img src="https://sugaryums.com/wp-content/uploads/2022/04/Japanese-Strawberry-Shortcake-Cover-SugarYums.jpg" width="300" height="250" alt="Strawberry">
+            <h3>Strawberry</h3>
+            <p>₹1500 per kg</p>
+            <button class="add-to-cart" data-name="Strawberry" data-price="1500">Add to Cart</button>
+        </div>
+        <!-- Product 3 -->
+        <div class="product-card">
+            <img src="https://pyramideats.com/cdn/shop/files/EgglessRedVelvetCake1.webp?v=1686747136&width=900" alt="Red Velvet">
+            <h3>Red Velvet</h3>
+            <p>₹1000 per kg</p>
+            <button class="add-to-cart" data-name="Red Velvet" data-price="1000">Add to Cart</button>
+        </div>
+        <!-- Product 4 -->
+        <div class="product-card">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ49QV1uhrKvrXK_djS8WoLMgT2vzM6KMb71g&s" alt="BlueBerry">
+            <h3>BlueBerry</h3>
+            <p>₹2000 per kg</p>
+            <button class="add-to-cart" data-name="BlueBerry" data-price="2000">Add to Cart</button>
+        </div>
+        <!-- Product 5 -->
+        <div class="product-card">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRv7xeWomEeRg9h6dCnyWWZHhpwvrVOWcWypQ&s" alt="Oreo">
+            <h3>Oreo</h3>
+            <p>₹1000 per kg</p>
+            <button class="add-to-cart" data-name="Oreo" data-price="1000">Add to Cart</button>
+        </div>
+        <!-- Product 6 -->
+        <div class="product-card">
+            <img src="https://thomsonline.in/wp-content/uploads/2019/08/BUTTERSCOTCH-CAKE-3.jpg"height="250" alt="Butter Scotch">
+            <h3>Butter Scotch</h3>
+            <p>₹2000 per kg</p>
+            <button class="add-to-cart" data-name="Butter Scotch" data-price="2000">Add to Cart</button>
+        </div>
+        <!-- Product 7 -->
+        <div class="product-card">
+            <img src="https://veenaazmanov.com/wp-content/uploads/2019/09/Homemade-Vanilla-Birthday-Cake21.jpg" alt="Vanilla">
+            <h3>Vanilla</h3>
+            <p>₹700 per kg</p>
+            <button class="add-to-cart" data-name="Vanilla" data-price="700">Add to Cart</button>
+        </div>
+        <!-- Product 8 -->
+        <div class="product-card">
+            <img src="https://theoven.in/wp-content/uploads/2023/03/pistalouf.png" alt="Pista">
+            <h3>Pista</h3>
+            <p>₹1000 per kg</p>
+            <button class="add-to-cart" data-name="Pista" data-price="1000">Add to Cart</button>
+        </div>
+        <!-- Product 9 -->
+        <div class="product-card">
+            <img src="https://www.orderyourchoice.com/124946-large_default/pineapple-cake.jpg" alt="Pineapple">
+            <h3>Pineapple</h3>
+            <p>₹1500 per kg</p>
+            <button class="add-to-cart" data-name="Pineapple" data-price="1500">Add to Cart</button>
+        </div>
+        <!-- Product 10 -->
+        <div class="product-card">
+            <img src="https://tfcakes.in/images/products/230202_121618_424_398.jpg" alt="Mixed Fruit">
+            <h3>Mixed Fruit</h3>
+            <p>₹2000 per kg</p>
+            <button class="add-to-cart" data-name="Mixed Fruit" data-price="2000">Add to Cart</button>
+        </div>
+        <!-- Product 11 -->
+        <div class="product-card">
+            <img src="https://peartreekitchen.com/wp-content/uploads/2021/09/Nut-Cake-0368.jpg"height="250" alt="Mixed Nuts">
+            <h3>Mixed Nuts</h3>
+            <p>₹2500 per kg</p>
+            <button class="add-to-cart" data-name="Mixed Nuts" data-price="2500">Add to Cart</button>
+        </div>
+        <!-- Product 12 -->
+        <div class="product-card">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQDx2kB-cQgI_gdVUSUWDBuBV8KCj756qlBdQ&s" height="250"alt="Carrot Cake">
+            <h3>Carrot Cake</h3>
+            <p>₹1000 per kg</p>
+            <button class="add-to-cart" data-name="Carrot Cake" data-price="1000">Add to Cart</button>
+        </div>
+        <!-- Product 13 -->
+        <div class="product-card">
+            <img src="https://assets.winni.in/product/primary/2023/3/83233.jpeg?dpr=1&w=500" alt="Black Forest">
+            <h3>Black Forest</h3>
+            <p>₹1500 per kg</p>
+            <button class="add-to-cart" data-name="Black Forest" data-price="1500">Add to Cart</button>
+        </div>
+        <!-- Product 14 -->
+        <div class="product-card">
+            <img src="https://mrbrownbakery.com/image/images/n2dbRlCxa2XEa4GHUj4g1mrGxQ0jmlufaHuZudrM.jpeg?p=full" alt="Coffee Cake">
+            <h3>Coffee Cake</h3>
+            <p>₹2000 per kg</p>
+            <button class="add-to-cart" data-name="Coffee Cake" data-price="2000">Add to Cart</button>
+        </div>
+        <!-- Product 15 -->
+        <div class="product-card">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSXJbJ9iL2I9c-NCuR2679xTYtpDSuxuXuUTQ&s" height="250" alt="RaspBerry">
+            <h3>RaspBerry</h3>
+            <p>₹2000 per kg</p>
+            <button class="add-to-cart" data-name="RaspBerry" data-price="2000">Add to Cart</button>
+        </div>
+    </div>
+
+    <!-- Side Payment Panel with Slot Booking -->
+    <div class="payment-panel">
+        <span class="panel-close">&times;</span>
+        <div class="panel-header">
+            <h2 class="panel-title">Complete Your Purchase</h2>
+        </div>
+
+        <div class="added-product">
+            <div class="added-product-image" id="panel-product-image">Image</div>
+            <div class="added-product-details">
+                <h4 id="panel-product-name">Product Name</h4>
+                <div class="added-product-price" id="panel-product-price">₹0.00</div>
+            </div>
+        </div>
+
+        <!-- Slot Booking Section -->
+        <div class="slot-booking-section">
+            <h3 class="section-title">Choose Delivery Slot</h3>
+            
+            <div class="date-picker">
+                <div class="date-picker-header">
+                    <button class="date-nav-button" id="prev-month">&#9664;</button>
+                    <div class="current-month" id="current-month">April 2025</div>
+                    <button class="date-nav-button" id="next-month">&#9654;</button>
+                </div>
+                
+                <div class="date-grid" id="weekday-header">
+                    <div class="day-name">Sun</div>
+                    <div class="day-name">Mon</div>
+                    <div class="day-name">Tue</div>
+                    <div class="day-name">Wed</div>
+                    <div class="day-name">Thu</div>
+                    <div class="day-name">Fri</div>
+                    <div class="day-name">Sat</div>
+                </div>
+                
+                <div class="date-grid" id="date-grid">
+                    <!-- Date grid will be filled dynamically by JS -->
+                </div>
+            </div>
+            
+            <div class="time-slots">
+                <h4 class="section-title">Select Time Slot</h4>
+                <div class="time-slot-grid" id="time-slot-grid">
+                    <!-- Time slots will be filled dynamically by JS -->
+                </div>
+            </div>
+            
+            <div class="selected-slot-summary" id="slot-summary">
+                <div class="summary-title">Delivery Details</div>
+                <div class="slot-detail">
+                    <span class="slot-detail-label">Date:</span>
+                    <span id="summary-date">Not selected</span>
+                </div>
+                <div class="slot-detail">
+                    <span class="slot-detail-label">Time:</span>
+                    <span id="summary-time">Not selected</span>
+                </div>
+            </div>
+        </div>
+
+        <button class="checkout-button" id="checkout-button" disabled>Complete Purchase</button>
+    </div>
+    
+    <!-- Order Confirmation Container -->
+    <div class="order-confirmation-container" id="order-confirmation-container" style="display: none;">
+        <div class="order-confirmation">
+            <span class="close-confirmation">&times;</span>
+            <div class="confirmation-content">
+                <h2 class="confirmation-title">🎉 Thank You for Your Order!</h2>
+                <p class="confirmation-message">Your payment was successful. We're getting your order ready.</p>
+                
+                <div class="delivery-info">
+                    <p><strong>Delivery Person:</strong> <span id="delivery-person" class="green-highlight">Alex</span></p>
+                    <p><strong>Delivery Slot:</strong> <span id="delivery-slot" class="green-highlight">Not set</span></p>
+                    <p><strong>Estimated Arrival:</strong> <span id="delivery-time" class="green-highlight">Within time slot</span></p>
+                </div>
+
+                <div class="track-order-note">
+                    You can track your delivery in the <strong>My Orders</strong> section.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="overlay"></div>
+
+    <footer>
+        &copy; 2025 Grocery Express. All Rights Reserved. | Designed with care.
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elements
+            const addToCartButtons = document.querySelectorAll('.add-to-cart');
+            const paymentPanel = document.querySelector('.payment-panel');
+            const overlay = document.querySelector('.overlay');
+            const closeButton = document.querySelector('.panel-close');
+            const checkoutButton = document.getElementById('checkout-button');
+            const confirmationContainer = document.getElementById('order-confirmation-container');
+            const closeConfirmation = document.querySelector('.close-confirmation');
+            const slotSummary = document.getElementById('slot-summary');
+
+            const panelProductName = document.getElementById('panel-product-name');
+            const panelProductPrice = document.getElementById('panel-product-price');
+            const panelProductImage = document.getElementById('panel-product-image');
+            
+            // Date related elements
+            const prevMonthBtn = document.getElementById('prev-month');
+            const nextMonthBtn = document.getElementById('next-month');
+            const currentMonthEl = document.getElementById('current-month');
+            const dateGrid = document.getElementById('date-grid');
+            const timeSlotGrid = document.getElementById('time-slot-grid');
+            
+            // Summary elements
+            const summaryDate = document.getElementById('summary-date');
+            const summaryTime = document.getElementById('summary-time');
+            const deliverySlot = document.getElementById('delivery-slot');
+            
+            // Delivery person names
+            const deliveryPersons = ['Alex', 'Maya', 'Sam', 'Jordan', 'Taylor'];
+            
+            // Current date and selected date/time
+            const today = new Date();
+            let currentMonth = today.getMonth();
+            let currentYear = today.getFullYear();
+            let selectedDate = null;
+            let selectedTimeSlot = null;
+            
+            // Initialize the calendar
+            function initCalendar() {
+                updateCalendarHeader();
+                populateDateGrid();
+            }
+            
+            // Update the calendar header with current month/year
+            function updateCalendarHeader() {
+                const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 
+                               'August', 'September', 'October', 'November', 'December'];
+                currentMonthEl.textContent = `${months[currentMonth]} ${currentYear}`;
+            }
+            
+            // Generate the date grid for the current month
+            function populateDateGrid() {
+                dateGrid.innerHTML = '';
+                
+                const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+                const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+                
+                // Add empty cells for days before first of month
+                for (let i = 0; i < firstDay; i++) {
+                    const emptyCell = document.createElement('div');
+                    emptyCell.classList.add('date-item');
+                    dateGrid.appendChild(emptyCell);
+                }
+                
+                // Add days of the month
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const dateCell = document.createElement('div');
+                    dateCell.classList.add('date-item');
+                    dateCell.textContent = day;
+                    
+                    const cellDate = new Date(currentYear, currentMonth, day);
+                    
+                    // Check if this date is today
+                    if (cellDate.toDateString() === today.toDateString()) {
+                        dateCell.classList.add('today');
+                    }
+                    
+                    // Disable past dates
+                    if (cellDate < new Date(today.setHours(0, 0, 0, 0))) {
+                        dateCell.classList.add('disabled');
+                    } else {
+                        dateCell.addEventListener('click', () => selectDate(cellDate, dateCell));
+                    }
+                    
+                    // Check if this is the currently selected date
+                    if (selectedDate && cellDate.toDateString() === selectedDate.toDateString()) {
+                        dateCell.classList.add('selected');
+                    }
+                    
+                    dateGrid.appendChild(dateCell);
+                }
+            }
+            
+            // Handle date selection
+            function selectDate(date, element) {
+                // Remove 'selected' class from all dates
+                document.querySelectorAll('.date-item').forEach(item => {
+                    item.classList.remove('selected');
+                });
+                
+                // Add 'selected' class to the clicked date
+                element.classList.add('selected');
+                selectedDate = date;
+                
+                // Update the summary
+                const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                summaryDate.textContent = date.toLocaleDateString('en-US', options);
+                slotSummary.classList.add('visible');
+                
+                // Generate time slots for the selected date
+                generateTimeSlots(date);
+                
+                // Check if we can enable the checkout button
+                updateCheckoutButton();
+            }
+            
+            // Generate time slots for the selected date
+            function generateTimeSlots(date) {
+                timeSlotGrid.innerHTML = '';
+                
+                // Time slots to generate
+                const slots = [
+                    { time: '9:00 AM - 11:00 AM', available: true },
+                    { time: '11:00 AM - 1:00 PM', available: true },
+                    { time: '1:00 PM - 3:00 PM', available: true },
+                    { time: '3:00 PM - 5:00 PM', available: true },
+                    { time: '5:00 PM - 7:00 PM', available: true },
+                    { time: '7:00 PM - 9:00 PM', available: true }
+                ];
+                
+                // Randomly disable some slots to simulate availability
+                const isToday = date.toDateString() === today.toDateString();
+                const currentHour = today.getHours();
+                
+                slots.forEach((slot, index) => {
+                    // If today, disable time slots that have already passed
+                    if (isToday) {
+                        const slotHour = parseInt(slot.time.split(':')[0]);
+                        const isPM = slot.time.includes('PM');
+                        const adjustedHour = slotHour + (isPM && slotHour !== 12 ? 12 : 0);
+                        
+                        if (adjustedHour <= currentHour) {
+                            slot.available = false;
+                        }
+                    }
+                    
+                    // Randomly disable some slots (except today's logic takes precedence)
+                    if (slot.available && Math.random() < 0.3) {
+                        slot.available = false;
+                    }
+                    
+                    // Create the time slot element
+                    const slotElement = document.createElement('div');
+                    slotElement.classList.add('time-slot');
+                    
+                    if (!slot.available) {
+                        slotElement.classList.add('disabled');
+                        slotElement.innerHTML = `
+                            ${slot.time}
+                            <div class="time-slot-info">Not Available</div>
+                        `;
+                    } else {
+                        slotElement.innerHTML = `
+                            ${slot.time}
+                            <div class="time-slot-info">Available</div>
+                        `;
+                        
+                        slotElement.addEventListener('click', () => selectTimeSlot(slot.time, slotElement));
+                    }
+                    
+                    timeSlotGrid.appendChild(slotElement);
+                });
+                
+                // Reset the selected time slot
+                selectedTimeSlot = null;
+                summaryTime.textContent = 'Not selected';
+            }
+            
+            // Handle time slot selection
+            function selectTimeSlot(time, element) {
+                // Remove 'selected' class from all time slots
+                document.querySelectorAll('.time-slot').forEach(item => {
+                    item.classList.remove('selected');
+                });
+                
+                // Add 'selected' class to the clicked time slot
+                element.classList.add('selected');
+                selectedTimeSlot = time;
+                
+                // Update the summary
+                summaryTime.textContent = time;
+                
+                // Check if we can enable the checkout button
+                updateCheckoutButton();
+            }
+            
+            // Update the checkout button state
+            function updateCheckoutButton() {
+                if (selectedDate && selectedTimeSlot) {
+                    checkoutButton.disabled = false;
+                } else {
+                    checkoutButton.disabled = true;
+                }
+            }
+            
+            // Navigate to previous month
+            prevMonthBtn.addEventListener('click', function() {
+                currentMonth--;
+                if (currentMonth < 0) {
+                    currentMonth = 11;
+                    currentYear--;
+                }
+                updateCalendarHeader();
+                populateDateGrid();
+            });
+            
+            // Navigate to next month
+            nextMonthBtn.addEventListener('click', function() {
+                currentMonth++;
+                if (currentMonth > 11) {
+                    currentMonth = 0;
+                    currentYear++;
+                }
+                updateCalendarHeader();
+                populateDateGrid();
+            });
+            
+            // Add to cart button click
+            addToCartButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const productName = this.getAttribute('data-name');
+                    const productPrice = this.getAttribute('data-price');
+                    
+                    panelProductName.textContent = productName;
+                    panelProductPrice.textContent = `₹${productPrice}`;
+                    panelProductImage.textContent = 'Product';
+                    
+                    paymentPanel.classList.add('active');
+                    overlay.classList.add('active');
+                    
+                    // Reset selection
+                    selectedDate = null;
+                    selectedTimeSlot = null;
+                    initCalendar();
+                    updateCheckoutButton();
+                });
+            });
+            
+            // Close payment panel
+            closeButton.addEventListener('click', function() {
+                paymentPanel.classList.remove('active');
+                overlay.classList.remove('active');
+            });
+            
+            // Overlay click
+            overlay.addEventListener('click', function() {
+                // Only close panels if the confirmation is not visible
+                if (confirmationContainer.style.display === 'none') {
+                    paymentPanel.classList.remove('active');
+                    overlay.classList.remove('active');
+                }
+            });
+            
+            // Handle checkout button click
+            checkoutButton.addEventListener('click', function() {
+                // Hide payment panel
+                paymentPanel.classList.remove('active');
+                
+                // Set random delivery person
+                const randomPerson = deliveryPersons[Math.floor(Math.random() * deliveryPersons.length)];
+                
+                document.getElementById('delivery-person').textContent = randomPerson;
+                
+                // Set the selected delivery slot in the confirmation
+                if (selectedDate && selectedTimeSlot) {
+                    const options = { weekday: 'short', month: 'short', day: 'numeric' };
+                    const formattedDate = selectedDate.toLocaleDateString('en-US', options);
+                    deliverySlot.textContent = `${formattedDate}, ${selectedTimeSlot}`;
+                }
+                
+                // Show order confirmation
+                confirmationContainer.style.display = 'flex';
+                
+                // Keep overlay active
+                overlay.classList.add('active');
+            });
+            
+            // Close confirmation when X is clicked
+            closeConfirmation.addEventListener('click', function() {
+                confirmationContainer.style.display = 'none';
+                overlay.classList.remove('active');
+            });
+            
+            // Initialize the calendar
+            initCalendar();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grocery Express</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background-image: url('your-background-image.jpg'); /* Replace with your image */
+            background-size: cover;
+            background-position: center;
+            color: #333;
+        }
+        header {
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 1.5em;
+            letter-spacing: 1px;
+        }
+        nav {
+            display: flex;
+            justify-content: space-around;
+            background-color: rgba(51, 51, 51, 0.9);
+            padding: 10px 0;
+        }
+        nav a {
+            color: white;
+            font-weight: bold;
+            text-transform: uppercase;
+            text-decoration: none;
+            padding: 10px 15px;
+        }
+        nav a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+        }
+        .product-card {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            padding: 20px;
+            width: 250px;
+        }
+        .product-card img {
+            width: 100%;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+        .product-card h3 {
+            margin: 10px 0;
+            font-size: 1.2em;
+        }
+        .product-card p {
+            margin: 10px 0;
+            font-size: 1em;
+            color: #555;
+        }
+        .product-card button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 10px 15px;
+            font-size: 1em;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .product-card button:hover {
+            background-color: #45a049;
+        }
+        
+        /* Enhanced Order Confirmation Styles */
+        .order-confirmation-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1100;
+            pointer-events: none;
+        }
+
+        .order-confirmation {
+            background: linear-gradient(145deg, #f9fff9, #e1f5e1);
+            border: 2px solid #4CAF50;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2), 0 0 40px rgba(76, 175, 80, 0.15);
+            animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            text-align: center;
+            position: relative;
+            pointer-events: auto;
+        }
+
+        @keyframes popIn {
+            0% { opacity: 0; transform: scale(0.8); }
+            70% { transform: scale(1.05); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        .confirmation-title {
+            color: #2e8b57;
+            font-size: 28px;
+            margin-bottom: 15px;
+            text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+            position: relative;
+            display: inline-block;
+        }
+
+        .confirmation-title:after {
+            content: '';
+            display: block;
+            width: 80%;
+            height: 3px;
+            background: linear-gradient(to right, transparent, #4CAF50, transparent);
+            margin: 10px auto 0;
+        }
+
+        .confirmation-message {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 25px;
+        }
+
+        .delivery-info {
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .delivery-info p {
+            margin: 10px 0;
+        }
+
+        .delivery-info strong {
+            color: #2e8b57;
+            font-weight: 600;
+        }
+
+        #delivery-person, #delivery-time {
+            font-weight: 600;
+            color: #000;
+            border-bottom: 1px dashed #4CAF50;
+            padding-bottom: 2px;
+        }
+
+        .track-order-note {
+            font-size: 15px;
+            color: #555;
+            background-color: rgba(76, 175, 80, 0.1);
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            border-left: 4px solid #4CAF50;
+        }
+
+        .close-confirmation {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #888;
+            transition: color 0.2s;
+            width: 30px;
+            height: 30px;
+            line-height: 30px;
+            text-align: center;
+            border-radius: 50%;
+        }
+
+        .close-confirmation:hover {
+            color: #333;
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        .green-highlight {
+            background-color: rgba(76, 175, 80, 0.1);
+            border-radius: 4px;
+            padding: 5px 8px;
+        }
+
+        /* === Payment Panel Styles === */
+        .payment-panel {
+            position: fixed;
+            top: 0;
+            right: 0;
+            transform: translateX(100%); /* Fully hide offscreen */
+            width: 400px;
+            height: 100%;
+            background-color: white;
+            box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .payment-panel.active {
+            transform: translateX(0); /* Slide into view */
+        }
+
+        .payment-panel.active {
+            right: 0;
+        }
+        .panel-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            cursor: pointer;
+            font-size: 24px;
+            color: #888;
+        }
+        .panel-header {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        .panel-title {
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .added-product {
+            display: flex;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .added-product-image {
+            width: 80px;
+            height: 80px;
+            background-color: #eee;
+            border-radius: 4px;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #888;
+        }
+        .added-product-details h4 {
+            margin-bottom: 5px;
+        }
+        .added-product-price {
+            font-weight: bold;
+            color: #333;
+        }
+        .payment-section {
+            margin-top: 25px;
+        }
+
+        .section-title {
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        .payment-methods {
+            margin-bottom: 20px;
+        }
+        .payment-method {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .payment-method.selected {
+            border-color: #4CAF50;
+            background-color: #f9fff9;
+        }
+        .payment-method-radio {
+            margin-right: 10px;
+        }
+        .payment-method-icon {
+            width: 40px;
+            height: 25px;
+            background-color: #eee;
+            border-radius: 4px;
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+        .card-details {
+            display: none;
+            margin-top: 15px;
+        }
+        .card-details.active {
+            display: block;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: #555;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .form-row {
+            display: flex;
+            gap: 10px;
+        }
+        .form-row .form-group {
+            flex: 1;
+        }
+        .checkout-button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+        .checkout-button:hover {
+            background-color: #45a049;
+        }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 999;
+            display: none;
+        }
+        .overlay.active {
+            display: block;
+        }
+
+        footer {
+            text-align: center;
+            padding: 15px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            font-size: 0.9em;
+            letter-spacing: 0.5px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        Grocery Express - Your Daily Needs Delivered!
+    </header>
+    <nav>
+        <a href="#home">Home</a>
+        <a href="#products">Products</a>
+        <a href="#about">About Us</a>
+        <a href="#contact">Contact</a>
+    </nav>
+    <div class="container" id="products">
+        <!-- Product 1 -->
+        <div class="product-card">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvMBVOeOrAVq7nnnEeefChO0mRbma3nvYQVg&s" width="300" height="250" alt="Fresh Apples">
+            <h3>Chicken</h3>
+            <p>₹350 per kg</p>
+            <button class="add-to-cart" data-product-id="1" data-product-name="Fresh Apples" data-product-price="199">Add to Cart</button>
+        </div>
+        <!-- Product 2 -->
+        <div class="product-card">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQpr6RBHXEBpo5pW8f61ttG-x9EzFH20iLQrw&s" width="300" height="250" alt="Organic Bananas">
+            <h3>Mutton</h3>
+            <p>₹800 per kg</p>
+            <button class="add-to-cart" data-product-id="2" data-product-name="Organic Bananas" data-product-price="50">Add to Cart</button>
+        </div>
+        <!-- Product 3 -->
+        <div class="product-card">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS3tCyg9uPOycD2GKW4IsJxeBn6ydEzVR2w8w&s" width="300" height="250" alt="Fresh Grapes">
+            <h3>Fish</h3>
+            <p>₹500 per kg</p>
+            <button class="add-to-cart" data-product-id="3" data-product-name="Fresh Grapes" data-product-price="100">Add to Cart</button>
+        </div>
+        <!-- Product 4 -->
+        <div class="product-card">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRkaSMH5Rfp9bXrv52COVCNkRIMlfa5Q8BO6A&s" width="300" height="250" alt="Mangos">
+            <h3>Prawns</h3>
+            <p>₹600 per kg</p>
+            <button class="add-to-cart" data-product-id="4" data-product-name="Mangos" data-product-price="100">Add to Cart</button>
+        </div>
+        
+    <!-- Order Confirmation Container - Perfectly Centered -->
+    <div class="order-confirmation-container" id="order-confirmation-container" style="display: none;">
+        <div class="order-confirmation">
+            <span class="close-confirmation">&times;</span>
+            <div class="confirmation-content">
+                <h2 class="confirmation-title">🎉 Thank You for Your Order!</h2>
+                <p class="confirmation-message">Your payment was successful. We're getting your order ready.</p>
+                
+                <div class="delivery-info">
+                    <p><strong>Delivery Person:</strong> <span id="delivery-person" class="green-highlight">Alex</span></p>
+                    <p><strong>Estimated Arrival:</strong> <span id="delivery-time" class="green-highlight">30–45 minutes</span></p>
+                </div>
+
+                <div class="track-order-note">
+                    You can track your delivery in the <strong>My Orders</strong> section.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Side Payment Panel -->
+    <div class="payment-panel">
+        <span class="panel-close">&times;</span>
+        <div class="panel-header">
+            <h2 class="panel-title">Complete Your Purchase</h2>
+        </div>
+
+        <div class="added-product">
+            <div class="added-product-image" id="panel-product-image">Image</div>
+            <div class="added-product-details">
+                <h4 id="panel-product-name">Product Name</h4>
+                <div class="added-product-price" id="panel-product-price">₹0.00</div>
+            </div>
+        </div>
+
+        <div class="payment-section">
+            <h3 class="section-title">Choose Payment Method</h3>
+
+            <div class="payment-methods">
+                <div class="payment-method selected" data-method="credit-card">
+                    <input type="radio" name="payment" id="credit-card" class="payment-method-radio" checked>
+                    <div class="payment-method-icon">VISA</div>
+                    <label for="credit-card">Credit Card</label>
+                </div>
+
+                <div class="payment-method" data-method="paypal">
+                    <input type="radio" name="payment" id="paypal" class="payment-method-radio">
+                    <div class="payment-method-icon">PP</div>
+                    <label for="paypal">PayPal</label>
+                </div>
+
+                <div class="payment-method" data-method="apple-pay">
+                    <input type="radio" name="payment" id="apple-pay" class="payment-method-radio">
+                    <div class="payment-method-icon">AP</div>
+                    <label for="apple-pay">Apple Pay</label>
+                </div>
+            </div>
+
+            <div class="card-details active">
+                <div class="form-group">
+                    <label for="card-number">Card Number</label>
+                    <input type="text" id="card-number" placeholder="1234 5678 9012 3456">
+                </div>
+
+                <div class="form-group">
+                    <label for="card-name">Cardholder Name</label>
+                    <input type="text" id="card-name" placeholder="John Doe">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="expiry">Expiry Date</label>
+                        <input type="text" id="expiry" placeholder="MM/YY">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cvv">CVV</label>
+                        <input type="text" id="cvv" placeholder="123">
+                    </div>
+                </div>
+            </div>
+
+            <button class="checkout-button">Complete Purchase</button>
+        </div>
+    </div>
+    
+    <footer>
+        &copy; 2025 Grocery Express. All Rights Reserved. | Designed with care.
+    </footer>
+
+    <div class="overlay"></div>
+
+    <script>
+        const addToCartButtons = document.querySelectorAll('.add-to-cart');
+        const paymentPanel = document.querySelector('.payment-panel');
+        const overlay = document.querySelector('.overlay');
+        const closeButton = document.querySelector('.panel-close');
+        const paymentMethods = document.querySelectorAll('.payment-method');
+        const cardDetails = document.querySelector('.card-details');
+        const checkoutButton = document.querySelector('.checkout-button');
+        const confirmationContainer = document.getElementById('order-confirmation-container');
+        const closeConfirmation = document.querySelector('.close-confirmation');
+
+        const panelProductName = document.getElementById('panel-product-name');
+        const panelProductPrice = document.getElementById('panel-product-price');
+        const panelProductImage = document.getElementById('panel-product-image');
+
+        // Delivery person names and times
+        const deliveryPersons = ['Alex', 'Maya', 'Sam', 'Jordan', 'Taylor'];
+        const deliveryTimes = ['30–45 minutes', '20–35 minutes', '25–40 minutes', '15–30 minutes'];
+
+        addToCartButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const productId = this.getAttribute('data-product-id');
+                const productName = this.getAttribute('data-product-name');
+                const productPrice = this.getAttribute('data-product-price');
+
+                panelProductName.textContent = productName;
+                panelProductPrice.textContent = `₹${productPrice}`;
+                panelProductImage.textContent = `Image ${productId}`;
+
+                paymentPanel.classList.add('active');
+                overlay.classList.add('active');
+            });
+        });
+
+        closeButton.addEventListener('click', function() {
+            paymentPanel.classList.remove('active');
+            overlay.classList.remove('active');
+        });
+
+        overlay.addEventListener('click', function() {
+            // Only close panels if the confirmation is not visible
+            if (confirmationContainer.style.display === 'none') {
+                paymentPanel.classList.remove('active');
+                overlay.classList.remove('active');
+            }
+        });
+
+        paymentMethods.forEach(method => {
+            method.addEventListener('click', function() {
+                paymentMethods.forEach(m => m.classList.remove('selected'));
+                this.classList.add('selected');
+                const radio = this.querySelector('input[type="radio"]');
+                radio.checked = true;
+
+                const paymentType = this.getAttribute('data-method');
+                if (paymentType === 'credit-card') {
+                    cardDetails.classList.add('active');
+                } else {
+                    cardDetails.classList.remove('active');
+                }
+            });
+        });
+
+        // Handle checkout button click
+        checkoutButton.addEventListener('click', function() {
+            // Hide payment panel
+            paymentPanel.classList.remove('active');
+            
+            // Set random delivery person and time
+            const randomPerson = deliveryPersons[Math.floor(Math.random() * deliveryPersons.length)];
+            const randomTime = deliveryTimes[Math.floor(Math.random() * deliveryTimes.length)];
+            
+            document.getElementById('delivery-person').textContent = randomPerson;
+            document.getElementById('delivery-time').textContent = randomTime;
+            
+            // Show order confirmation
+            confirmationContainer.style.display = 'flex';
+            
+            // Keep overlay active
+            overlay.classList.add('active');
+        });
+        
+        // Close confirmation when X is clicked
+        closeConfirmation.addEventListener('click', function() {
+            confirmationContainer.style.display = 'none';
+            overlay.classList.remove('active');
+        });
+    </script>
+</body>
+</html>
